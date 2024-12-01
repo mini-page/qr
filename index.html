@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>QR Code Generator</title>
+
+    <!-- QR Code Library -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        b {
+            color: #00006e;
+        }
+
+        .card {
+            transition: all 1s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 30px #0000001a;
+            transform: translateY(-10px);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white transition-all duration-500">
+
+    <!-- Header -->
+    <header class="bg-blue-600 rounded-xl m-2 text-white p-4 shadow-md">
+        <div class="flex justify-between items-center max-w-screen-xl mx-auto">
+            <h1 class="text-3xl font-bold fade-in">QR Code <br> <b>Generator</b></h1>
+            <!-- Theme Toggler -->
+            <div id="theme-toggler" class="bg-blue-000 p-2 rounded-full w-15 cursor-pointer">
+                <i id="theme-icon"
+                    class="fas fa-circle text-yellow-400 text-3xl transition-all duration-700 hover:text-yellow-500 dark:hover:text-yellow-300"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex flex-col justify-center items-center py-6 px-2">
+
+        <!-- QR Code Generator Section -->
+        <div class="w-full max-w-md p-6 bg-white rounded-xl shadow-lg mt-10 dark:bg-gray-700 fade-in hover-transition">
+            <h2 class="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">Generate Your QR Code</h2>
+
+            <!-- Input Field for URL/Text -->
+            <input id="qr-input" type="text" placeholder="Enter URL or Text"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4 dark:bg-gray-800 dark:border-gray-600 dark:text-white transition-all">
+
+            <!-- Generate Button -->
+            <button id="generate-btn"
+                class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 mb-4 transition-all duration-300 ">
+                <i class="fas fa-qrcode"></i>
+                Generate <b>QR Code</b>
+            </button>
+
+            <!-- QR Code Display -->
+            <div id="qr-code" class="flex justify-center items-center bg-white p-10 rounded-xl mb-4"></div>
+
+            <!-- Download Button (Hidden until QR code is generated) -->
+            <button id="download-btn"
+                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 hidden transition-all duration-300">
+                <i class="fas fa-file-download"></i>
+                Download <b class="text-green-900">QR Code</b>
+            </button>
+        </div>
+
+        <!-- Section Cards for Functionality -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 duration-700 mt-10 max-w-screen-xl mx-auto">
+            <div
+                class="card bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto justify-center h-48 hover:shadow-xl transition-all hover:scale-105">
+                <div class="flex items-center space-x-4 mb-4">
+                    <i class="fas fa-qrcode text-3xl text-blue-500"></i>
+                    <h3 class="text-xl font-semibold">QR Code Generation</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-200">Generate QR codes from any URL or text with a single click.
+                </p>
+            </div>
+
+            <div
+                class="card bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto justify-center h-48 hover:shadow-xl transition-all hover:scale-105">
+                <div class="flex items-center space-x-4 mb-4">
+                    <i class="fas fa-download text-3xl text-green-500"></i>
+                    <h3 class="text-xl font-semibold">Download Your QR Code</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-200">Once generated, you can download your QR code as an image.
+                </p>
+            </div>
+
+            <div
+                class="card bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto justify-center h-48 hover:shadow-xl transition-all hover:scale-105">
+                <div class="flex items-center space-x-4 mb-4">
+                    <i class="fas fa-paint-brush text-3xl text-purple-500"></i>
+                    <h3 class="text-xl font-semibold">Customizable QR Codes</h3>
+                </div>
+                <p class="text-gray-600 dark:text-gray-200">Customize your QR codes with colors and sizes in the future.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 text-white py-4 w-full text-center mt-10 fade-in">
+        <p class="text-sm">Created with ❤️ by <a href="https://github.com" target="_blank" class="underline">Your
+                Name</a></p>
+    </footer>
+
+    <!-- JavaScript for Theme Toggler and QR Code Generation -->
+    <script>
+        const inputField = document.getElementById('qr-input');
+        const generateBtn = document.getElementById('generate-btn');
+        const qrCodeDisplay = document.getElementById('qr-code');
+        const downloadBtn = document.getElementById('download-btn');
+
+        // Event Listener for Generate Button
+        generateBtn.addEventListener('click', () => {
+            const inputText = inputField.value;
+
+            if (inputText.trim() === "") {
+                alert("Please enter some text or URL!");
+                return;
+            }
+
+            // Clear the previous QR code and download button
+            qrCodeDisplay.innerHTML = "";
+            downloadBtn.classList.add('hidden');
+
+            // Generate QR code
+            const qrCode = new QRCode(qrCodeDisplay, {
+                text: inputText,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Show download button after QR code is generated
+
+            qrCodeDisplay.classList.remove('hidden');
+            downloadBtn.classList.remove('hidden');
+
+            // Add download functionality
+            downloadBtn.addEventListener('click', () => {
+                const canvas = qrCodeDisplay.querySelector("canvas");
+                const dataURL = canvas.toDataURL("image/png");
+
+                // Create a temporary link to trigger download
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = 'qr_code.png';
+                link.click();
+            });
+        });
+
+        // Theme Toggler
+        const themeToggler = document.getElementById('theme-toggler');
+        const themeIcon = document.getElementById('theme-icon');
+
+        // Function to toggle dark mode
+        themeToggler.addEventListener('click', () => {
+            const isDarkMode = document.documentElement.classList.contains('dark');
+
+            if (isDarkMode) {
+                // Switch to light mode
+                document.documentElement.classList.remove('dark');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-circle');
+            } else {
+                // Switch to dark mode
+                document.documentElement.classList.add('dark');
+                themeIcon.classList.remove('fa-circle');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
