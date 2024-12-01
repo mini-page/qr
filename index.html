@@ -24,13 +24,30 @@
             color: #00006e;
         }
 
+        /* Hover effect for cards */
         .card {
-            transition: all 1s ease-in-out;
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            box-shadow: 0 10px 30px #0000001a;
-            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+            border: 5px solid transparent;
+        }
+
+        .card.qrcode:hover {
+            border-color: #3b82f6;
+            /* Blue for QR Code card */
+        }
+
+        .card.download:hover {
+            border-color: #10b981;
+            /* Green for Download card */
+        }
+
+        .card.customize:hover {
+            border-color: #9333ea;
+            /* Purple for Customize card */
         }
     </style>
 </head>
@@ -40,11 +57,10 @@
     <!-- Header -->
     <header class="bg-blue-600 rounded-xl m-2 text-white p-4 shadow-md">
         <div class="flex justify-between items-center max-w-screen-xl mx-auto">
-            <h1 class="text-3xl font-bold fade-in">QR Code <br> <b>Generator</b></h1>
+            <h1 class="text-3xl font-bold">QR Code <br> <b>Generator</b></h1>
             <!-- Theme Toggler -->
-            <div id="theme-toggler" class="bg-blue-000 p-2 rounded-full w-15 cursor-pointer">
-                <i id="theme-icon"
-                    class="fas fa-circle text-yellow-400 text-3xl transition-all duration-700 hover:text-yellow-500 dark:hover:text-yellow-300"></i>
+            <div id="theme-toggler" class="p-2 rounded-full cursor-pointer">
+                <i id="theme-icon" class="fas fa-moon text-yellow-400 text-3xl transition-all duration-700"></i>
             </div>
         </div>
     </header>
@@ -53,7 +69,7 @@
     <div class="min-h-screen flex flex-col justify-center items-center py-6 px-2">
 
         <!-- QR Code Generator Section -->
-        <div class="w-full max-w-md p-6 bg-white rounded-xl shadow-lg mt-10 dark:bg-gray-700 fade-in hover-transition">
+        <div class="w-full max-w-md p-6 bg-white rounded-xl shadow-lg mt-10 dark:bg-gray-700">
             <h2 class="text-3xl font-semibold text-center text-gray-800 dark:text-white mb-6">Generate Your QR Code</h2>
 
             <!-- Input Field for URL/Text -->
@@ -62,7 +78,7 @@
 
             <!-- Generate Button -->
             <button id="generate-btn"
-                class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 mb-4 transition-all duration-300 ">
+                class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 mb-4 transition-all duration-300">
                 <i class="fas fa-qrcode"></i>
                 Generate <b>QR Code</b>
             </button>
@@ -79,9 +95,8 @@
         </div>
 
         <!-- Section Cards for Functionality -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 duration-700 mt-10 max-w-screen-xl mx-auto">
-            <div
-                class="card bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto justify-center h-48 hover:shadow-xl transition-all hover:scale-105">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10 max-w-screen-xl mx-auto">
+            <div class="card qrcode bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto h-48">
                 <div class="flex items-center space-x-4 mb-4">
                     <i class="fas fa-qrcode text-3xl text-blue-500"></i>
                     <h3 class="text-xl font-semibold">QR Code Generation</h3>
@@ -90,8 +105,7 @@
                 </p>
             </div>
 
-            <div
-                class="card bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto justify-center h-48 hover:shadow-xl transition-all hover:scale-105">
+            <div class="card download bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto h-48">
                 <div class="flex items-center space-x-4 mb-4">
                     <i class="fas fa-download text-3xl text-green-500"></i>
                     <h3 class="text-xl font-semibold">Download Your QR Code</h3>
@@ -100,8 +114,7 @@
                 </p>
             </div>
 
-            <div
-                class="card bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto justify-center h-48 hover:shadow-xl transition-all hover:scale-105">
+            <div class="card customize bg-white dark:bg-gray-700 rounded-lg p-6 shadow-lg w-80 mx-auto h-48">
                 <div class="flex items-center space-x-4 mb-4">
                     <i class="fas fa-paint-brush text-3xl text-purple-500"></i>
                     <h3 class="text-xl font-semibold">Customizable QR Codes</h3>
@@ -113,9 +126,9 @@
     </div>
 
     <!-- Footer Section -->
-    <footer class="bg-gray-800 text-white py-4 w-full text-center mt-10 fade-in">
-        <p class="text-sm">Created with ❤️ by <a href="https://github.com" target="_blank" class="underline">Your
-                Name</a></p>
+    <footer class="bg-gray-800 text-white py-4 w-full text-center mt-10">
+        <p class="text-sm">Created with ❤️ by <a href="https://github.com/mini-page" target="_blank"
+                class="underline">mini-page</a></p>
     </footer>
 
     <!-- JavaScript for Theme Toggler and QR Code Generation -->
@@ -124,12 +137,17 @@
         const generateBtn = document.getElementById('generate-btn');
         const qrCodeDisplay = document.getElementById('qr-code');
         const downloadBtn = document.getElementById('download-btn');
+        const themeToggler = document.getElementById('theme-toggler');
+        const themeIcon = document.getElementById('theme-icon');
+
+        // Initially hide the QR code display
+        qrCodeDisplay.style.display = "none";
 
         // Event Listener for Generate Button
         generateBtn.addEventListener('click', () => {
-            const inputText = inputField.value;
+            const inputText = inputField.value.trim();
 
-            if (inputText.trim() === "") {
+            if (!inputText) {
                 alert("Please enter some text or URL!");
                 return;
             }
@@ -148,13 +166,12 @@
                 correctLevel: QRCode.CorrectLevel.H
             });
 
-            // Show download button after QR code is generated
-
-            qrCodeDisplay.classList.remove('hidden');
+            // Show QR code display and download button after QR code is generated
+            qrCodeDisplay.style.display = "flex"; // Show the QR code div
             downloadBtn.classList.remove('hidden');
 
             // Add download functionality
-            downloadBtn.addEventListener('click', () => {
+            downloadBtn.onclick = () => {
                 const canvas = qrCodeDisplay.querySelector("canvas");
                 const dataURL = canvas.toDataURL("image/png");
 
@@ -163,28 +180,14 @@
                 link.href = dataURL;
                 link.download = 'qr_code.png';
                 link.click();
-            });
+            };
         });
 
         // Theme Toggler
-        const themeToggler = document.getElementById('theme-toggler');
-        const themeIcon = document.getElementById('theme-icon');
-
-        // Function to toggle dark mode
         themeToggler.addEventListener('click', () => {
-            const isDarkMode = document.documentElement.classList.contains('dark');
-
-            if (isDarkMode) {
-                // Switch to light mode
-                document.documentElement.classList.remove('dark');
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-circle');
-            } else {
-                // Switch to dark mode
-                document.documentElement.classList.add('dark');
-                themeIcon.classList.remove('fa-circle');
-                themeIcon.classList.add('fa-moon');
-            }
+            const isDarkMode = document.documentElement.classList.toggle('dark');
+            themeIcon.classList.toggle('fa-moon', !isDarkMode);
+            themeIcon.classList.toggle('fa-circle', isDarkMode);
         });
     </script>
 
